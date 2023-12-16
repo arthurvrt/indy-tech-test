@@ -1,4 +1,5 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { ValidationResponse } from "./types/useCode";
 
 export const errorHandler: ErrorRequestHandler = (
   err: Error,
@@ -12,7 +13,7 @@ export const errorHandler: ErrorRequestHandler = (
     return next(err);
   }
 
-  const response = {
+  const response: ValidationResponse = {
     promocode_name: "",
     status: "denied",
     reasons: ["Something went wrong"],
