@@ -1,7 +1,8 @@
 import express, { Express } from "express";
 import bodyParser from "body-parser";
+import { CodeCreation } from "./types/createCode";
 
-export const promoCodes = [];
+export const promoCodes: CodeCreation[] = [];
 
 const createApp = (): Express => {
   const app = express();
