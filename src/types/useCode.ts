@@ -22,3 +22,8 @@ export interface ValidationResponse {
   avantage?: Avantage;
   reasons?: string[];
 }
+
+export interface EvaluationResult {
+  isValid: boolean;
+  reasons?: string[];
+}

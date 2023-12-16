@@ -1,3 +1,4 @@
+import { getWeather } from "../openWeather/openWeatherApi";
 import {
   AgeRestriction,
   AndRestriction,
@@ -6,14 +7,32 @@ import {
   Restriction,
   WeatherRestriction,
 } from "../types/createCode";
-import { CodeUsageArgs } from "../types/useCode";
+import { CodeUsageArgs, EvaluationResult } from "../types/useCode";
+import { isAfter, isBefore, isWithinInterval } from "date-fns";
+
+let allReasons: string[] = [];
 
 export const validateRestrictions = async (
   restrictions: Restriction[],
   requestArguments: CodeUsageArgs
-): Promise<boolean> => {
+): Promise<EvaluationResult> => {
+  allReasons = [];
+
+  const isValid = await globalRule(restrictions, requestArguments);
+
+  if (isValid) {
+    return { isValid };
+  } else {
+    return { isValid: false, reasons: allReasons };
+  }
+};
+
+export async function globalRule(
+  restriction: Restriction[],
+  requestArguments: CodeUsageArgs
+): Promise<boolean> {
   const results = await Promise.all(
-    restrictions.map((restriction) =>
+    restriction.map((restriction) =>
       checkSingleRestriction(restriction, requestArguments)
     )
   );
@@ -21,7 +40,7 @@ export const validateRestrictions = async (
   const isValid = results.every(Boolean);
 
   return isValid;
-};
+}
 
 export const checkSingleRestriction = async (
   restriction: Restriction,
@@ -49,33 +68,136 @@ export function dateRule(
   restriction: DateRestriction,
   requestArguments: CodeUsageArgs
 ): boolean {
-  return true;
+  const {
+    "@date": { after, before },
+  } = restriction;
+
+  let afterDate: Date | null = null;
+  let beforeDate: Date | null = null;
+
+  if (after) {
+    afterDate = new Date(after);
+  }
+
+  if (before) {
+    beforeDate = new Date(before);
+  }
+
+  let rideDate: Date;
+  if (!requestArguments.date) {
+    rideDate = new Date();
+  } else {
+    rideDate = new Date(requestArguments.date);
+  }
+
+  let isValidDate: boolean;
+
+  if (afterDate && beforeDate) {
+    isValidDate = isWithinInterval(rideDate, {
+      start: afterDate,
+      end: beforeDate,
+    });
+  } else if (afterDate) {
+    isValidDate = isAfter(rideDate, afterDate);
+  } else if (beforeDate) {
+    isValidDate = isBefore(rideDate, beforeDate);
+  } else {
+    isValidDate = true;
+  }
+
+  if (isValidDate) {
+    return true;
+  }
+
+  allReasons.push("Invalid Date");
+  return false;
 }
 
 export function ageRule(
   restriction: AgeRestriction,
   requestArguments: CodeUsageArgs
 ): boolean {
+  const {
+    "@age": { lt, eq, gt },
+  } = restriction;
+
+  if (!requestArguments.age) {
+    allReasons.push("Missing age");
+    return false;
+  }
+  if (eq && requestArguments.age !== eq) {
+    allReasons.push("Invalid age EQ");
+    return false;
+  }
+  if (lt && requestArguments.age >= lt) {
+    allReasons.push("Invalid age lt");
+    return false;
+  }
+  if (gt && requestArguments.age <= gt) {
+    allReasons.push("Invalid age gt");
+    return false;
+  }
   return true;
 }
 
-export function meteoRule(
+export async function meteoRule(
   restriction: WeatherRestriction,
   requestArguments: CodeUsageArgs
-): boolean {
-  return true;
+): Promise<boolean> {
+  const {
+    "@meteo": { is, temp },
+  } = restriction;
+
+  if (!requestArguments.meteo?.town) {
+    allReasons.push("No location specified");
+    return false;
+  }
+
+  try {
+    const weather = await getWeather(requestArguments.meteo.town);
+
+    // Weather response: https://openweathermap.org/current#parameter
+    // "is" possibilities : https://openweathermap.org/weather-conditions
+
+    if (is && weather.weather[0].description !== is) {
+      allReasons.push("Err weather is");
+      return false;
+    }
+
+    if (temp) {
+      if (temp.gt && weather.main.temp <= temp.gt) {
+        allReasons.push("Err weather temp gt");
+        return false;
+      }
+      if (temp.lt && weather.main.temp >= temp.lt) {
+        allReasons.push("Err weather temp lt");
+        return false;
+      }
+    }
+    return true;
+  } catch (error) {
+    throw new Error(`${error}`);
+  }
 }
 
-export function andRule(
+export async function andRule(
   andRestriction: AndRestriction,
   requestArguments: CodeUsageArgs
-): boolean {
-  return true;
+): Promise<boolean> {
+  return await globalRule(andRestriction["@and"], requestArguments);
 }
 
-export function orRule(
+export async function orRule(
   orRestriction: OrRestriction,
   requestArguments: CodeUsageArgs
-): boolean {
-  return true;
+): Promise<boolean> {
+  const results = await Promise.all(
+    orRestriction["@or"].map((restriction) =>
+      checkSingleRestriction(restriction, requestArguments)
+    )
+  );
+
+  const isValid = results.some(Boolean);
+
+  return isValid;
 }
