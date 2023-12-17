@@ -29,4 +29,33 @@ export const ErrMessage = {
   CODE: {
     MISSING: "Missing code",
   },
+  INPUT: {
+    DATE: {
+      AFTER_INVALID: "After date must be a string",
+      BEFORE_INVALID: "Before date must be a string",
+    },
+    AGE: {
+      EQ_INVALID: "Eq must be a number",
+      LT_INVALID: "Lt must be a number",
+      GT_INVALID: "Gt must be a number",
+    },
+    METEO: {
+      IS_INDALID: "Is must be a string",
+      TEMP_INVALID: "Temp must be an object",
+      GT_INVALID: "Gt must be a number",
+      LT_INVALID: "Lt must be a number",
+    },
+    RESTRICTION: {
+      INVALID: "Restrictions must be an array",
+    },
+    AVANTAGE: {
+      MSSING: "No avantage specified",
+      INVALID: "Avantage must be a number",
+    },
+    NAME: {
+      MISSING: "Promocode name is required",
+      INVALID: "Promocode must be a string",
+      ALREADY_EXISTS: "Promocode already exists",
+    },
+  },
 } as const;

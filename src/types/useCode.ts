@@ -10,14 +10,14 @@ export interface CodeUsageArgs {
 }
 
 export interface CodeUsage {
-  promocode_name: string;
+  name: string;
   arguments: CodeUsageArgs;
 }
 
 export type ValidationResponseStatus = "accepted" | "denied";
 
 export interface ValidationResponse {
-  promocode_name: string;
+  name: string;
   status: ValidationResponseStatus;
   avantage?: Avantage;
   reasons?: string[];

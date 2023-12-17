@@ -6,7 +6,7 @@ import {
   DateRestriction,
   OrRestriction,
   Restriction,
-  WeatherRestriction,
+  MeteoRestriction,
 } from "../types/createCode";
 import { CodeUsageArgs, EvaluationResult } from "../types/useCode";
 import { isAfter, isBefore, isWithinInterval } from "date-fns";
@@ -55,7 +55,7 @@ export const checkSingleRestriction = async (
     case "@age":
       return ageRule(restriction as AgeRestriction, requestArguments);
     case "@meteo":
-      return meteoRule(restriction as WeatherRestriction, requestArguments);
+      return meteoRule(restriction as MeteoRestriction, requestArguments);
     case "@or":
       return orRule(restriction as OrRestriction, requestArguments);
     case "@and":
@@ -142,7 +142,7 @@ export function ageRule(
 }
 
 export async function meteoRule(
-  restriction: WeatherRestriction,
+  restriction: MeteoRestriction,
   requestArguments: CodeUsageArgs
 ): Promise<boolean> {
   const {

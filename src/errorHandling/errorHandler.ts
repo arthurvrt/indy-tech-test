@@ -10,6 +10,7 @@ export const errorHandler: ErrorRequestHandler = (
 ) => {
   let response: ValidationResponse;
   const { name } = req.body;
+
   console.error(err.stack);
 
   if (res.headersSent) {
@@ -18,7 +19,7 @@ export const errorHandler: ErrorRequestHandler = (
 
   if (err instanceof CustomError) {
     response = {
-      promocode_name: name,
+      name,
       status: "denied",
       reasons: [err.message],
     };
@@ -26,7 +27,7 @@ export const errorHandler: ErrorRequestHandler = (
   }
 
   response = {
-    promocode_name: "",
+    name: "",
     status: "denied",
     reasons: ["Something went wrong"],
   };

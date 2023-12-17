@@ -9,7 +9,7 @@ export interface AgeRestriction {
   "@age": { eq?: number; lt?: number; gt?: number };
 }
 
-export interface WeatherRestriction {
+export interface MeteoRestriction {
   "@meteo": {
     is?: string;
     temp?: {
@@ -30,7 +30,7 @@ export interface AndRestriction {
 export type Restriction =
   | DateRestriction
   | AgeRestriction
-  | WeatherRestriction
+  | MeteoRestriction
   | OrRestriction
   | AndRestriction;
 

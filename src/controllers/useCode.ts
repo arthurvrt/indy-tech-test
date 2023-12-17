@@ -7,11 +7,11 @@ import { ErrMessage } from "../errorHandling/errorMessages";
 export const useCode = async (req: Request, res: Response) => {
   let response: ValidationResponse;
   const {
-    promocode_name,
+    name,
     arguments: { age, date, meteo },
   } = req.body;
 
-  const promocode = promoCodes.find((code) => code.name === promocode_name);
+  const promocode = promoCodes.find((code) => code.name === name);
 
   if (!promocode) throw new Error(ErrMessage.CODE.MISSING);
 
@@ -26,7 +26,7 @@ export const useCode = async (req: Request, res: Response) => {
     );
     if (!restrictionResponse.isValid) {
       response = {
-        promocode_name,
+        name,
         status: "denied",
         reasons: restrictionResponse.reasons,
       };
@@ -38,7 +38,7 @@ export const useCode = async (req: Request, res: Response) => {
   }
 
   response = {
-    promocode_name,
+    name,
     status: "accepted",
     avantage: { percent: promocode?.avantage.percent },
   };
