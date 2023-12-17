@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { promoCodes } from "../app";
 import { ValidationResponse } from "../types/useCode";
 import { validateRestrictions } from "../servicies/validationLogic";
+import { ErrMessage } from "../errorHandling/errorMessages";
 
 export const useCode = async (req: Request, res: Response) => {
   let response: ValidationResponse;
@@ -12,7 +13,7 @@ export const useCode = async (req: Request, res: Response) => {
 
   const promocode = promoCodes.find((code) => code.name === promocode_name);
 
-  if (!promocode) throw new Error("missing code");
+  if (!promocode) throw new Error(ErrMessage.CODE.MISSING);
 
   try {
     const restrictionResponse = await validateRestrictions(

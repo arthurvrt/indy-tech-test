@@ -1,3 +1,4 @@
+import { ErrMessage } from "../errorHandling/errorMessages";
 import { getWeather } from "../openWeather/openWeatherApi";
 import {
   AgeRestriction,
@@ -109,7 +110,7 @@ export function dateRule(
     return true;
   }
 
-  allReasons.push("Invalid Date");
+  allReasons.push(ErrMessage.DATE.INVALID);
   return false;
 }
 
@@ -122,19 +123,19 @@ export function ageRule(
   } = restriction;
 
   if (!requestArguments.age) {
-    allReasons.push("Missing age");
+    allReasons.push(ErrMessage.AGE.MISSING);
     return false;
   }
   if (eq && requestArguments.age !== eq) {
-    allReasons.push("Invalid age EQ");
+    allReasons.push(ErrMessage.AGE.INVALID_EQ);
     return false;
   }
   if (lt && requestArguments.age >= lt) {
-    allReasons.push("Invalid age lt");
+    allReasons.push(ErrMessage.AGE.INVALID_LT);
     return false;
   }
   if (gt && requestArguments.age <= gt) {
-    allReasons.push("Invalid age gt");
+    allReasons.push(ErrMessage.AGE.INVALID_GT);
     return false;
   }
   return true;
@@ -149,7 +150,7 @@ export async function meteoRule(
   } = restriction;
 
   if (!requestArguments.meteo?.town) {
-    allReasons.push("No location specified");
+    allReasons.push(ErrMessage.LOCATION.NO_SPECIFIED);
     return false;
   }
 
@@ -160,17 +161,17 @@ export async function meteoRule(
     // "is" possibilities : https://openweathermap.org/weather-conditions
 
     if (is && weather.weather[0].description !== is) {
-      allReasons.push("Err weather is");
+      allReasons.push(ErrMessage.METEO.IS_INVALID);
       return false;
     }
 
     if (temp) {
       if (temp.gt && weather.main.temp <= temp.gt) {
-        allReasons.push("Err weather temp gt");
+        allReasons.push(ErrMessage.METEO.TEMP_GT_INVALID);
         return false;
       }
       if (temp.lt && weather.main.temp >= temp.lt) {
-        allReasons.push("Err weather temp lt");
+        allReasons.push(ErrMessage.METEO.TEMP_LT_INVALID);
         return false;
       }
     }

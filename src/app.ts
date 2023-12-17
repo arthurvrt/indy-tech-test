@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import bodyParser from "body-parser";
 import { CodeCreation } from "./types/createCode";
 import promocodeRouter from "./routes/promocodeRouter";
-import { errorHandler } from "./errorHandler";
+import { errorHandler } from "./errorHandling/errorHandler";
 
 export const promoCodes: CodeCreation[] = [];
 
