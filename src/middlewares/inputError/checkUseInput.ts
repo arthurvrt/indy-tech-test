@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { promoCodes } from "../app";
+import { promoCodes } from "../../app";
 import { CustomError } from "../errorHandling/CustomError";
 import { ErrMessage } from "../errorHandling/errorMessages";
-import { CodeUsage } from "../types/useCode";
+import { CodeUsage } from "../../types/useCode";
 
 import Joi from "joi";
 
@@ -29,8 +29,6 @@ export const checkUseInput = (
   next: NextFunction
 ) => {
   const { name }: CodeUsage = req.body;
-
-  console.log("req.body", req.body);
 
   const result = useCodeSchema.validate(req.body);
 

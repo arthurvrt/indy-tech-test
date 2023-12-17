@@ -6,10 +6,10 @@ import {
   OrRestriction,
   Restriction,
   MeteoRestriction,
-} from "../types/createCode";
+} from "../../types/createCode";
 
 import { CustomError } from "../errorHandling/CustomError";
-import { promoCodes } from "../app";
+import { promoCodes } from "../../app";
 import { ErrMessage } from "../errorHandling/errorMessages";
 
 const verifyDate = (restriction: DateRestriction): void => {

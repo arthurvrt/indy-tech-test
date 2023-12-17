@@ -30,3 +30,10 @@ To start the server, run:
 The server will start on the port specified in your environment variables, or 3000 by default.
 
 ## What would you have done to improve your test if you'd had more time?
+
+- JOI input checking for creation input
+- API Documentation
+- DB setup
+- Models setup
+- ORM setup
+- In depth testing

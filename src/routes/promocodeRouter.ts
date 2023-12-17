@@ -1,8 +1,8 @@
 import express from "express";
 import { createCode } from "../controllers/createCode";
 import { useCode } from "../controllers/useCode";
-import { checkUseInput } from "../inputError/checkUseInput";
-import { checkCreationInput } from "../inputError/checkCreationInput";
+import { checkUseInput } from "../middlewares/inputError/checkUseInput";
+import { checkCreationInput } from "../middlewares/inputError/checkCreationInput";
 
 const promocodeRouter = express.Router();
 

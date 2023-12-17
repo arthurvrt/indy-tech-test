@@ -1,5 +1,5 @@
-import { CustomError } from "../errorHandling/CustomError";
-import { ErrMessage } from "../errorHandling/errorMessages";
+import { CustomError } from "../../middlewares/errorHandling/CustomError";
+import { ErrMessage } from "../../middlewares/errorHandling/errorMessages";
 import { GeocodingApiResponse, WeatherApiResponse } from "./openWeatherTypes";
 import fetch from "node-fetch";
 

@@ -1,5 +1,5 @@
-import { ErrMessage } from "../errorHandling/errorMessages";
-import { getWeather } from "../openWeather/openWeatherApi";
+import { ErrMessage } from "../middlewares/errorHandling/errorMessages";
+import { getWeather } from "../thirdParty/openWeather/openWeatherApi";
 import {
   AgeRestriction,
   AndRestriction,
@@ -55,11 +55,11 @@ export const checkSingleRestriction = async (
     case "@age":
       return ageRule(restriction as AgeRestriction, requestArguments);
     case "@meteo":
-      return meteoRule(restriction as MeteoRestriction, requestArguments);
+      return await meteoRule(restriction as MeteoRestriction, requestArguments);
     case "@or":
-      return orRule(restriction as OrRestriction, requestArguments);
+      return await orRule(restriction as OrRestriction, requestArguments);
     case "@and":
-      return andRule(restriction as AndRestriction, requestArguments);
+      return await andRule(restriction as AndRestriction, requestArguments);
     default:
       return true;
   }
