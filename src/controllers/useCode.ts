@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { promoCodes } from "../app";
 import { ValidationResponse } from "../types/useCode";
-import { validateRestrictions } from "../servicies/validationLogic";
+import { validateRestrictions } from "../services/validationLogic";
 import { ErrMessage } from "../middlewares/errorHandling/errorMessages";
 import { CustomError } from "../middlewares/errorHandling/CustomError";
+import { findPromocode } from "../repositories/promoCodesRepository";
 
 export const useCode = async (req: Request, res: Response) => {
   let response: ValidationResponse;
@@ -12,8 +12,7 @@ export const useCode = async (req: Request, res: Response) => {
     arguments: { age, date, meteo },
   } = req.body;
 
-  const promocode = promoCodes.find((code) => code.name === name);
-
+  const promocode = await findPromocode(name);
   if (!promocode) throw new CustomError(400, ErrMessage.CODE.MISSING);
 
   try {

@@ -13,6 +13,21 @@ const ensureApiKey = (): string => {
   return apiKey;
 };
 
+const handleErrorResponse = (errorMessage: string, status: number) => {
+  throw new CustomError(400, `${errorMessage} ${status}`);
+};
+
+const fetchData = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    handleErrorResponse(
+      ErrMessage.OPENWEATHER_API.FETCH_ERROR,
+      response.status
+    );
+  }
+  return response.json();
+};
+
 export const getGeocodingUrl = (city: string): string => {
   const apiKey = ensureApiKey();
   return `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=${LIMIT}&appid=${apiKey}` as const;
@@ -27,16 +42,7 @@ const getLocation = async (city: string): Promise<GeocodingApiResponse[]> => {
   const GEOCODING_URL = getGeocodingUrl(city);
 
   try {
-    const response = await fetch(GEOCODING_URL);
-    if (!response.ok) {
-      throw new CustomError(
-        400,
-        `${ErrMessage.OPENWEATHER_API.GEOCING_ERROR} ${response.status}`
-      );
-    }
-    const geocodingData: GeocodingApiResponse[] =
-      (await response.json()) as GeocodingApiResponse[];
-    return geocodingData;
+    return (await fetchData(GEOCODING_URL)) as GeocodingApiResponse[];
   } catch (error) {
     throw new CustomError(
       400,
@@ -59,17 +65,7 @@ export const getWeather = async (city: string): Promise<WeatherApiResponse> => {
       location[0].lat,
       location[0].lon
     );
-    const weatherResponse = await fetch(OPEN_WEATHER_URL);
-
-    if (!weatherResponse.ok) {
-      throw new CustomError(
-        400,
-        `${ErrMessage.OPENWEATHER_API.FETCH_ERROR} ${weatherResponse.status}`
-      );
-    }
-    const weatherData: WeatherApiResponse =
-      (await weatherResponse.json()) as WeatherApiResponse;
-    return weatherData;
+    return (await fetchData(OPEN_WEATHER_URL)) as WeatherApiResponse;
   } catch (error) {
     throw new CustomError(
       400,

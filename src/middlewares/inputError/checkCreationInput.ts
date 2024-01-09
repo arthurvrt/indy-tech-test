@@ -9,8 +9,8 @@ import {
 } from "../../types/createCode";
 
 import { CustomError } from "../errorHandling/CustomError";
-import { promoCodes } from "../../app";
 import { ErrMessage } from "../errorHandling/errorMessages";
+import { findPromocode } from "../../repositories/promoCodesRepository";
 
 const verifyDate = (restriction: DateRestriction): void => {
   const {
@@ -91,7 +91,7 @@ const verifyRestrictionStructure = (restriction: Restriction): void => {
       verifyAnd(restriction as AndRestriction);
       break;
     default:
-      return;
+      throw new CustomError(400, "Unknown @key");
   }
 };
 
@@ -104,11 +104,11 @@ const verifyRestriction = (restrictions: Restriction[]): void => {
   }
 };
 
-const verifyName = (name: string): void => {
+const verifyName = async (name: string): Promise<void> => {
   if (!name) throw new CustomError(400, ErrMessage.INPUT.NAME.MISSING);
   else if (typeof name !== "string")
     throw new CustomError(400, ErrMessage.INPUT.NAME.INVALID);
-  else if (promoCodes.find((code) => code.name === name))
+  else if (await findPromocode(name))
     throw new CustomError(400, ErrMessage.INPUT.NAME.ALREADY_EXISTS);
 };
 
@@ -118,14 +118,14 @@ const verifyAvantage = (avantage: { percent: number }): void => {
     throw new CustomError(400, ErrMessage.INPUT.AVANTAGE.INVALID);
 };
 
-export const checkCreationInput = (
+export const checkCreationInput = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const { name, avantage, restrictions } = req.body;
 
-  verifyName(name);
+  await verifyName(name);
   verifyAvantage(avantage);
   verifyRestriction(restrictions);
 

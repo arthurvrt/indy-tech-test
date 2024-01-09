@@ -1,0 +1,38 @@
+.
+├── config
+│   ├── jest.config.ts
+│   └── tsconfig.json
+├── src
+│   ├── controllers
+│   │   ├── createCode.ts
+│   │   └── useCode.ts
+│   ├── middlewares
+│   │   ├── errorHandling
+│   │   │   ├── CustomError.ts
+│   │   │   ├── errorHandler.ts
+│   │   │   └── errorMessages.ts
+│   │   └── inputError
+│   │       ├── checkCreationInput.ts
+│   │       └── checkUseInput.ts
+│   ├── routes
+│   │   └── promocodeRouter.ts
+│   ├── servicies
+│   │   └── validationLogic.ts
+│   ├── thirdParty
+│   │   └── openWeather
+│   │       ├── openWeatherApi.ts
+│   │       └── openWeatherTypes.ts
+│   ├── types
+│   │   ├── createCode.ts
+│   │   └── useCode.ts
+│   ├── app.ts
+│   └── index.ts
+├── test
+│   ├── __mocks__
+│   │   └── node-fetch.ts
+│   └── validationLogic.test.ts
+├── README.mdgit
+├── folder_structure.txt
+└── package.json
+
+14 directories, 22 files

@@ -6,7 +6,12 @@ import { checkCreationInput } from "../middlewares/inputError/checkCreationInput
 
 const promocodeRouter = express.Router();
 
-promocodeRouter.post("/create", checkCreationInput, createCode);
-promocodeRouter.post("/use", checkUseInput, useCode);
+promocodeRouter.post("/create", checkCreationInput, async (req, res) => {
+  await createCode(req, res);
+});
+
+promocodeRouter.post("/use", checkUseInput, async (req, res) => {
+  await useCode(req, res);
+});
 
 export default promocodeRouter;

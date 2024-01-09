@@ -1,10 +1,11 @@
 import { ErrMessage } from "../src/middlewares/errorHandling/errorMessages";
+import { validateRestrictions } from "../src/services/validationLogic";
 import {
   getGeocodingUrl,
   getOpenWeatherUrl,
   getWeather as actualGetWeather,
 } from "../src/thirdParty/openWeather/openWeatherApi";
-import { validateRestrictions } from "../src/servicies/validationLogic";
+
 import { Restriction } from "../src/types/createCode";
 import fetchMock from "./__mocks__/node-fetch";
 
@@ -23,7 +24,7 @@ describe("checkRestriction", () => {
 
       const result = await validateRestrictions(restrictions, requestArguments);
 
-      expect(result).toEqual({ isValid: true });
+      expect(result).toEqual({ isValid: true, reasons: [] });
     });
 
     it("should return false and invalid message date", async () => {
@@ -33,6 +34,8 @@ describe("checkRestriction", () => {
       const requestArguments = { date: "2023-06-01" };
 
       const result = await validateRestrictions(restrictions, requestArguments);
+
+      console.log("myResult", result);
 
       expect(result).toEqual({
         isValid: false,
@@ -48,7 +51,7 @@ describe("checkRestriction", () => {
 
       const result = await validateRestrictions(restrictions, requestArguments);
 
-      expect(result).toEqual({ isValid: true });
+      expect(result).toEqual({ isValid: true, reasons: [] });
     });
 
     it("should return false with reasons if age is outside the specified range", async () => {
@@ -69,7 +72,7 @@ describe("checkRestriction", () => {
 
       const result = await validateRestrictions(restrictions, requestArguments);
 
-      expect(result).toEqual({ isValid: true });
+      expect(result).toEqual({ isValid: true, reasons: [] });
     });
 
     it("should return false with reasons if age is missing", async () => {
@@ -167,7 +170,7 @@ describe("checkRestriction", () => {
 
       const result = await validateRestrictions(restrictions, requestArguments);
 
-      expect(result).toEqual({ isValid: true });
+      expect(result).toEqual({ isValid: true, reasons: [] });
     });
 
     it("should return false with reasons if any sub-rule is invalid", async () => {
@@ -218,7 +221,7 @@ describe("checkRestriction", () => {
       ];
       const requestArguments = { age: 15, date: "2022-06-01" };
       const result = await validateRestrictions(restrictions, requestArguments);
-      expect(result).toEqual({ isValid: true });
+      expect(result).toEqual({ isValid: true, reasons: [] });
     });
     it("should return false with reasons if all sub-rules are invalid", async () => {
       const restrictions = [

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { promoCodes } from "../../app";
 import { CustomError } from "../errorHandling/CustomError";
 import { ErrMessage } from "../errorHandling/errorMessages";
 import { CodeUsage } from "../../types/useCode";
 
 import Joi from "joi";
+import { findPromocode } from "../../repositories/promoCodesRepository";
 
 const useCodeSchema = Joi.object({
   name: Joi.string().required(),
@@ -17,13 +17,12 @@ const useCodeSchema = Joi.object({
   }),
 });
 
-const doesPromocodeExist = (name: string): void => {
-  const promocode = promoCodes.find((code) => code.name === name);
-
+const doesPromocodeExist = async (name: string): Promise<void> => {
+  const promocode = await findPromocode(name);
   if (!promocode) throw new CustomError(400, ErrMessage.CODE.MISSING);
 };
 
-export const checkUseInput = (
+export const checkUseInput = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -36,7 +35,12 @@ export const checkUseInput = (
     throw new CustomError(400, result.error.message);
   }
 
-  doesPromocodeExist(name);
+  try {
+    await doesPromocodeExist(name);
+    next();
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 
   next();
 };
