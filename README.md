@@ -14,7 +14,7 @@ npm install
 
 Node version v20.10.0
 
-Make sure to obtain your own API key for the [OpenWeather API](https://home.openweathermap.org/users/sign_in){:target="\_blank"}
+Make sure to obtain your own API key for the [OpenWeather API](https://home.openweathermap.org/users/sign_in)
 API, which is required for the proper functioning of the application.
 
 ## Usage
