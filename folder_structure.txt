@@ -14,9 +14,11 @@
 │   │   └── inputError
 │   │       ├── checkCreationInput.ts
 │   │       └── checkUseInput.ts
+│   ├── repositories
+│   │   └── promoCodesRepository.ts
 │   ├── routes
 │   │   └── promocodeRouter.ts
-│   ├── servicies
+│   ├── services
 │   │   └── validationLogic.ts
 │   ├── thirdParty
 │   │   └── openWeather
@@ -31,8 +33,8 @@
 │   ├── __mocks__
 │   │   └── node-fetch.ts
 │   └── validationLogic.test.ts
-├── README.mdgit
+├── README.md
 ├── folder_structure.txt
 └── package.json
 
-14 directories, 22 files
+15 directories, 23 files
